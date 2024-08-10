@@ -1,7 +1,13 @@
-<script>
+<script lang="ts">
+  import {
+    Header,
+    Footer,
+    InstructionsSection,
+    HelpSection,
+  } from "../components";
+
   import { Button, Col, Row, Tooltip } from "@sveltestrap/sveltestrap";
   import { Container } from "@sveltestrap/sveltestrap";
-  import { Image, Figure } from "@sveltestrap/sveltestrap";
   import {
     Card,
     CardHeader,
@@ -11,90 +17,113 @@
     CardTitle,
     CardSubtitle,
   } from "@sveltestrap/sveltestrap";
-  import {
-    Collapse,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    Navbar,
-    NavItem,
-    NavLink,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-  } from "@sveltestrap/sveltestrap";
+
   import { Badge, Form, Input, FormGroup } from "@sveltestrap/sveltestrap";
 
-  let isOpen = false;
+  let abstract: string = "";
+  let name: string = "";
+  let panelChair: string = "";
+  let supervisors: string = "";
+  let panelMembers: string = "";
+  let milestoneType: string = "";
+  let title: string = "";
+  let milestoneDate: Date | null = null;
+  let milestoneTime: string = "";
+  let zoomLink: string = "";
+  let calendarLink: string = "";
 
-  /**
-   * @param {{ detail: { isOpen: boolean; }; }} event
-   */
-  function handleUpdate(event) {
-    isOpen = event.detail.isOpen;
+  function clearAllFields() {
+    abstract = "";
+    name = "";
+    panelChair = "";
+    supervisors = "";
+    panelMembers = "";
+    milestoneType = "";
+    title = "";
+    milestoneDate = null;
+    milestoneTime = "";
+    zoomLink = "";
+    calendarLink = "";
+  }
+
+  function handleDateChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    milestoneDate = new Date(input.value);
+  }
+
+  function handleTimeChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    milestoneTime = input.value;
   }
 </script>
 
-<Container fluid>
-  <Navbar color="light" light expand="md" container="md">
-    <NavbarBrand href="/">Advertise my Seminar: FIT-GR</NavbarBrand>
-    <NavbarToggler on:click={() => (isOpen = !isOpen)} />
-    <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
-      <Nav class="ms-auto" navbar>
-        <NavItem>
-          <NavLink href="#components/">Components</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink href="https://github.com/sveltestrap/sveltestrap"
-            >GitHub</NavLink
-          >
-        </NavItem>
-        <Dropdown nav inNavbar>
-          <DropdownToggle nav caret>Options</DropdownToggle>
-          <DropdownMenu end>
-            <DropdownItem>Option 1</DropdownItem>
-            <DropdownItem>Option 2</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem>Reset</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </Nav>
-    </Collapse>
-  </Navbar>
+<Header />
+<Container>
+  <InstructionsSection />
   <Row>
     <Col>
       <Form>
-        <FormGroup floating label="Your Name">
-          <Input id="full-name" placeholder="Full name" />
-          <Tooltip target="full-name" placement="top">
-            Enter your <strong> full</strong> name!
-          </Tooltip>
-        </FormGroup>
+        <Row>
+          <Col
+            ><FormGroup floating label="Your Name">
+              <Input
+                id="full-name"
+                placeholder="Full name"
+                required
+                bind:value={name}
+              />
+              <Tooltip target="full-name" placement="top">
+                Enter your <strong> full</strong> name!
+              </Tooltip>
+            </FormGroup></Col
+          >
+          <Col
+            ><FormGroup floating label="Chair">
+              <Input
+                id="milestone-chair"
+                placeholder="Name"
+                required
+                bind:value={panelChair}
+              />
+              <Tooltip target="milestone-chair" placement="top">
+                Your milestone panel <strong>chair</strong>.
+              </Tooltip>
+            </FormGroup></Col
+          >
+        </Row>
 
         <FormGroup floating label="Supervisor(s) Names">
-          <Input id="supervisors" placeholder="Names" />
+          <Input
+            id="supervisors"
+            placeholder="Names"
+            required
+            bind:value={supervisors}
+          />
           <Tooltip target="supervisors" placement="top">
-            Your supervisors <strong>seperated by commas</strong>.
+            Your supervisors <strong>separated by commas</strong>.
           </Tooltip>
         </FormGroup>
 
         <FormGroup floating label="Panel Members">
-          <Input id="miletone-panel" placeholder="Names" />
+          <Input
+            id="miletone-panel"
+            placeholder="Names"
+            required
+            bind:value={panelMembers}
+          />
           <Tooltip target="miletone-panel" placement="top">
-            Your milestone panel members <strong>seperated by commas</strong>.
-          </Tooltip>
-        </FormGroup>
-
-        <FormGroup floating label="Chair">
-          <Input id="milestone-chair" placeholder="Name" />
-          <Tooltip target="milestone-chair" placement="top">
-            Your milestone panel <strong>chair</strong>.
+            Your milestone panel members <strong>separated by commas</strong>.
           </Tooltip>
         </FormGroup>
 
         <FormGroup floating label="Select your milestone type">
-          <Input id="milestone-type" type="select" placeholder="Milestone type">
+          <Input
+            bind:value={milestoneType}
+            id="milestone-type"
+            type="select"
+            placeholder="Milestone type"
+            required
+          >
             <option />
             <option value="alpha">Confirmation</option>
             <option value="bravo">Milestone</option>
@@ -106,9 +135,9 @@
         </FormGroup>
 
         <FormGroup floating label="Title">
-          <Input id="title" placeholder="Title" />
+          <Input id="title" placeholder="Title" required bind:value={title} />
           <Tooltip target="title" placement="top">
-            Whats your current research <strong>title</strong>?
+            What's your current research <strong>title</strong>?
           </Tooltip>
         </FormGroup>
 
@@ -118,66 +147,84 @@
             rows={10}
             type="textarea"
             placeholder="abstract"
+            bind:value={abstract}
+            required
           />
           <Tooltip target="abstract" placement="top">
             Needs to be less than <strong>150</strong> words.
           </Tooltip>
         </FormGroup>
 
-        <FormGroup floating label="Date">
-          <Input
-            id="milestone-date"
-            type="date"
-            placeholder="date placeholder"
-          />
-          <Tooltip target="milestone-date" placement="top">
-            When is your milestone <strong>planned</strong> for?
-          </Tooltip>
-        </FormGroup>
-        <FormGroup floating label="Time">
-          <Input
-            id="milestone-time"
-            type="time"
-            placeholder="time placeholder"
-          />
-          <Tooltip target="milestone-time" placement="top">
-            What time is your milestone <strong>planned</strong> for?
-          </Tooltip>
-        </FormGroup>
+        <Row>
+          <Col>
+            <FormGroup floating label="Date">
+              <Input
+                id="milestone-date"
+                type="date"
+                placeholder="date placeholder"
+                bind:value={milestoneDate}
+                on:change={handleDateChange}
+                required
+              />
+              <Tooltip target="milestone-date" placement="top">
+                When is your milestone <strong>planned</strong> for?
+              </Tooltip>
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup floating label="Time">
+              <Input
+                id="milestone-time"
+                type="time"
+                placeholder="time placeholder"
+                bind:value={milestoneTime}
+                on:change={handleTimeChange}
+                required
+              />
+              <Tooltip target="milestone-time" placement="top">
+                What time is your milestone <strong>planned</strong> for?
+              </Tooltip>
+            </FormGroup>
+          </Col>
+
+          <FormGroup floating label="Zoom Link">
+            <Input
+              id="zoom-link"
+              rows={10}
+              type="textarea"
+              placeholder="zoom link"
+              bind:value={zoomLink}
+              required
+            />
+            <Tooltip target="zoom-link" placement="top">
+              Enter your milestone's zoom <strong>link</strong>.
+            </Tooltip>
+          </FormGroup>
+
+          <FormGroup floating label="Calendar Link">
+            <Input
+              id="calendar-link"
+              rows={10}
+              type="textarea"
+              placeholder="calendar link"
+              bind:value={calendarLink}
+              required
+            />
+            <Tooltip target="calendar-link" placement="top">
+              Enter your milestone's google calendar <strong>link</strong>.
+            </Tooltip>
+          </FormGroup>
+        </Row>
+        <Button type="button" color="primary">Download HTML File</Button>
+        <Button type="button" color="danger" on:click={clearAllFields}
+          >Clear all fields</Button
+        >
       </Form>
     </Col>
     <Col>
-      <Container>
-        <Card theme="light" class="mb-3 p-3">
-          <CardHeader>
-            <CardTitle>Instructions</CardTitle>
-          </CardHeader>
-          <CardBody>
-            <!-- <CardSubtitle>Card subtitle</CardSubtitle> -->
-            <CardText>
-              <ol>
-                <li>Fill in the form on the left</li>
-                <li>Click the button below to download the HTML file</li>
-                <li>
-                  Send the HTML file to <a
-                    href="mailto:FIT-Graduate.Research@monash.edu"
-                    >FIT Graduate Research</a
-                  >
-                </li>
-              </ol>
-            </CardText>
-            <!-- <Button>Button</Button> -->
-          </CardBody>
-          <!-- <CardFooter>Footer</CardFooter> -->
-        </Card>
-        <Row>
-          <Col>
-            <Button color="primary">Download HTML File</Button>
-            <Button color="danger">Clear all fields</Button>
-          </Col>
-          <!-- <Col><Button color="danger">Clear all fields</Button></Col> -->
-        </Row>
-      </Container>
+      <HelpSection />
     </Col>
   </Row>
 </Container>
+
+<Footer />
