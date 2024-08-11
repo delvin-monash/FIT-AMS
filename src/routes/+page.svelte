@@ -120,7 +120,7 @@
       T2 +
       title +
       T3 +
-      name +
+      ` <strong>${name}</strong>` +
       T4 +
       abstract +
       T5 +
