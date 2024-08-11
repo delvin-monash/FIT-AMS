@@ -28,14 +28,6 @@
   <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
     <Nav class="ms-auto" navbar>
-      <NavItem>
-        <NavLink href="#components/">Components</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink href="https://github.com/sveltestrap/sveltestrap"
-          >GitHub</NavLink
-        >
-      </NavItem>
       <Dropdown nav inNavbar>
         <DropdownToggle nav caret>Options</DropdownToggle>
         <DropdownMenu end>

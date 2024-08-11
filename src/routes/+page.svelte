@@ -1,11 +1,30 @@
 <script lang="ts">
+  /**
+   * Import the components that are used in this page
+   */
+  import Header from "$lib/Header.svelte";
+  import InstructionsSection from "$lib/InstructionsSection.svelte";
+  import HelpSection from "$lib/HelpSection.svelte";
+  import ConfirmModal from "$lib/ConfirmModal.svelte";
+  import MyFooter from "$lib/MyFooter.svelte";
   import {
-    Header,
-    Footer,
-    InstructionsSection,
-    HelpSection,
-  } from "../components";
+    START,
+    T2,
+    T3,
+    T4,
+    T5,
+    T6,
+    T7,
+    T8,
+    T9,
+    T10,
+    T11,
+    T12,
+  } from "$lib/TemplateParts";
 
+  /**
+   * Sveltestrap imports
+   */
   import { Button, Col, Row, Tooltip } from "@sveltestrap/sveltestrap";
   import { Container } from "@sveltestrap/sveltestrap";
   import {
@@ -27,10 +46,11 @@
   let panelMembers: string = "";
   let milestoneType: string = "";
   let title: string = "";
-  let milestoneDate: Date | null = null;
+  let milestoneDate: Date = new Date();
   let milestoneTime: string = "";
   let zoomLink: string = "";
   let calendarLink: string = "";
+  let modalOpen: boolean = false;
 
   function clearAllFields() {
     abstract = "";
@@ -40,10 +60,24 @@
     panelMembers = "";
     milestoneType = "";
     title = "";
-    milestoneDate = null;
+    milestoneDate = new Date();
     milestoneTime = "";
     zoomLink = "";
     calendarLink = "";
+  }
+
+  function debugTestCasePerfect() {
+    abstract = "This is a test abstract";
+    name = "John Doe";
+    panelChair = "Dr. James Smith";
+    supervisors = "Dr. Alpha Bravo, Dr. Charlie Delta";
+    panelMembers = "Prof. Albert Einsein, Prof. Marie Curie";
+    milestoneType = "Milestone";
+    title = "This is a test title";
+    milestoneDate = new Date();
+    milestoneTime = "12:00";
+    zoomLink = "https://zoom.us";
+    calendarLink = "https://calendar.google.com";
   }
 
   function handleDateChange(event: Event) {
@@ -54,6 +88,65 @@
   function handleTimeChange(event: Event) {
     const input = event.target as HTMLInputElement;
     milestoneTime = input.value;
+  }
+
+  function onDownloadClick(event: Event) {
+    const input = event.target as HTMLInputElement;
+    modalOpen = true;
+    console.log("modalOpen: ", modalOpen);
+    triggerDownload(event);
+  }
+
+  function triggerDownload(event: Event) {
+    const combinedFields = combineFields(event);
+    const blob = new Blob([combinedFields], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = generateFileName();
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  function generateFileName() {
+    const firstName = name.split(" ")[0];
+    return `${milestoneType}-${firstName}-${milestoneDate.toDateString()}.html`;
+  }
+
+  function combineFields(event: Event) {
+    const combinedTemplate =
+      START +
+      milestoneType +
+      T2 +
+      title +
+      T3 +
+      name +
+      T4 +
+      abstract +
+      T5 +
+      generateTimeHTML(milestoneDate, milestoneTime, milestoneType) +
+      T6 +
+      zoomLink +
+      T7 +
+      calendarLink +
+      T8 +
+      name +
+      T9 +
+      panelChair +
+      T10 +
+      panelMembers +
+      T11 +
+      supervisors +
+      T12;
+    return combinedTemplate;
+  }
+
+  function generateTimeHTML(date: Date, time: string, type: string) {
+    const dateStr = date ? date.toDateString() : "";
+    const timeStr = time;
+    return `<p><strong>Date:</strong> ${dateStr}</p>
+      <p><strong>Time:</strong> ${timeStr}</p>
+      <p><strong>Type:</strong> ${type}</p>`;
   }
 </script>
 
@@ -125,9 +218,9 @@
             required
           >
             <option />
-            <option value="alpha">Confirmation</option>
-            <option value="bravo">Milestone</option>
-            <option value="charlie">Final Review</option>
+            <option value="Confirmation">Confirmation</option>
+            <option value="Milestone">Milestone</option>
+            <option value="Final Review">Final Review</option>
           </Input>
           <Tooltip target="miletone-type" placement="top">
             Enter your seminar <strong>type</strong>.
@@ -215,7 +308,9 @@
             </Tooltip>
           </FormGroup>
         </Row>
-        <Button type="button" color="primary">Download HTML File</Button>
+        <Button type="button" color="primary" on:click={onDownloadClick}
+          >Download HTML File</Button
+        >
         <Button type="button" color="danger" on:click={clearAllFields}
           >Clear all fields</Button
         >
@@ -223,8 +318,12 @@
     </Col>
     <Col>
       <HelpSection />
+      <Button type="button" color="success" on:click={debugTestCasePerfect}
+        >Debug (Perfect)</Button
+      >
     </Col>
   </Row>
+  <ConfirmModal inputAbstract={abstract} openScrollable={modalOpen} />
 </Container>
 
-<Footer />
+<MyFooter />
