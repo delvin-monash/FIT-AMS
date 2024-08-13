@@ -20,6 +20,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-cloudflare": "^4.7.2",
 		"@sveltestrap/sveltestrap": "^6.2.7"
 	}
 }
