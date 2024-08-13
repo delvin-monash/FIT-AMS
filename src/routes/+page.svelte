@@ -22,6 +22,9 @@
     T12,
   } from "$lib/TemplateParts";
 
+  import { formatDate, parseDate } from "$lib/UtilsDate";
+  import { isValidURL, isDateValid } from "$lib/UtilsValidate";
+
   /**
    * Sveltestrap imports
    */
@@ -46,7 +49,10 @@
   let panelMembers: string = "";
   let milestoneType: string = "";
   let title: string = "";
+
   let milestoneDate: Date = new Date();
+  let formattedMilestoneDate: string = formatDate(milestoneDate);
+
   let milestoneTime: string = "";
   let zoomLink: string = "";
   let calendarLink: string = "";
@@ -82,7 +88,9 @@
 
   function handleDateChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    milestoneDate = new Date(input.value);
+    // milestoneDate = new Date(input.value);
+    milestoneDate = parseDate(input.value);
+    formattedMilestoneDate = input.value;
   }
 
   function handleTimeChange(event: Event) {
@@ -91,10 +99,14 @@
   }
 
   function onDownloadClick(event: Event) {
-    const input = event.target as HTMLInputElement;
-    modalOpen = true;
-    console.log("modalOpen: ", modalOpen);
-    triggerDownload(event);
+    if (validateForm()) {
+      const input = event.target as HTMLInputElement;
+      modalOpen = true;
+      console.log("modalOpen: ", modalOpen);
+      triggerDownload(event);
+    } else {
+      console.log("Form validation failed");
+    }
   }
 
   function triggerDownload(event: Event) {
@@ -147,6 +159,22 @@
     return `<p><strong>Date:</strong> ${dateStr}</p>
       <p><strong>Time:</strong> ${timeStr}</p>
       <p><strong>Type:</strong> ${type}</p>`;
+  }
+
+  function validateForm(): boolean {
+    if (!isDateValid(formattedMilestoneDate)) {
+      alert("Milestone date must not be before today.");
+      return false;
+    }
+    if (!isValidURL(zoomLink)) {
+      alert("Invalid Zoom link.");
+      return false;
+    }
+    if (!isValidURL(calendarLink)) {
+      alert("Invalid Calendar link.");
+      return false;
+    }
+    return true;
   }
 </script>
 
@@ -255,7 +283,7 @@
                 id="milestone-date"
                 type="date"
                 placeholder="date placeholder"
-                bind:value={milestoneDate}
+                bind:value={formattedMilestoneDate}
                 on:change={handleDateChange}
                 required
               />
@@ -321,6 +349,9 @@
       <Button type="button" color="success" on:click={debugTestCasePerfect}
         >Debug (Perfect)</Button
       >
+      <p>
+        Selected Date: {milestoneDate ? milestoneDate.toDateString() : "None"}
+      </p>
     </Col>
   </Row>
   <ConfirmModal inputAbstract={abstract} openScrollable={modalOpen} />

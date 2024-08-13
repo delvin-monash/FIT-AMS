@@ -6,6 +6,7 @@
 
 <style>
   :global(.footer) {
+    margin-top: 100px;
     position: fixed;
     left: 0;
     bottom: 0;
