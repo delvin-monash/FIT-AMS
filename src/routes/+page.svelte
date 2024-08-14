@@ -79,6 +79,7 @@
   };
 
   function checkWordCount(event: Event) {
+    resizeTextarea(event);
     const input = event.target as HTMLInputElement;
     const wordCount = input.value.split(" ").length;
     errorMessages.abstractCurrentWordCount = wordCount;
@@ -222,13 +223,19 @@
     }
     return true;
   }
+
+  function resizeTextarea(event) {
+    const textarea = event.target;
+    textarea.style.height = "auto"; // Reset the height to calculate the new height
+    textarea.style.height = textarea.scrollHeight + "px"; // Set the height based on the content
+  }
 </script>
 
 <Header />
 <Container>
   <InstructionsSection />
   <Row>
-    <Col>
+    <Col class="main-content" md="8" lg="6">
       <Form on:submit={onDownloadClick}>
         <Row>
           <Col
@@ -312,7 +319,7 @@
         <FormGroup floating label="Abstract (250 words)">
           <Input
             id="abstract"
-            rows={10}
+            rows={1}
             type="textarea"
             placeholder="abstract"
             bind:value={abstract}
@@ -371,7 +378,7 @@
           <FormGroup floating label="Zoom Link">
             <Input
               id="zoom-link"
-              rows={10}
+              rows={2}
               type="textarea"
               placeholder="zoom link"
               bind:value={zoomLink}
@@ -406,13 +413,17 @@
             {/if}
           </FormGroup>
         </Row>
-        <Button type="submit" color="primary">Download HTML File</Button>
-        <Button type="button" color="info" on:click={clearAllFields}
-          >Clear all fields</Button
-        >
+        <div class="d-flex justify-content-center mt-3">
+          <Button type="submit" color="primary" class="mx-2"
+            >Download HTML File</Button
+          >
+          <Button type="button" color="info" on:click={clearAllFields}
+            >Clear all fields</Button
+          >
+        </div>
       </Form>
     </Col>
-    <Col>
+    <Col class="side-bar" md="4" lg="6">
       <HelpSection />
       {#if debugMode}
         <Button type="button" color="success" on:click={debugTestCasePerfect}

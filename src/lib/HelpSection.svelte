@@ -16,9 +16,12 @@
 </script>
 
 <Container fluid>
+  <!-- Spacer visible only on mobile devices -->
+  <div class="d-block d-md-none mb-4"></div>
+
   <Row>
     <Col>
-      <h2>Help</h2>
+      <h2>Need help filling in this form?</h2>
       <p>
         This is a simple form that you can use to submit your seminar details.
       </p>
@@ -63,10 +66,8 @@
             open = e.detail;
           }}
         >
-          <a href="#home"
-            >Enter the zoom link for your milestone here. Make sure you have
-            added your supervisors and the panel chair as alternative hosts.</a
-          >
+          Enter the zoom link for your milestone here. Make sure you have added
+          your supervisors and the panel chair as alternative hosts.
         </AccordionItem>
         <AccordionItem
           header="More information"

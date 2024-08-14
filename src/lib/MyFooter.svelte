@@ -18,7 +18,7 @@
 <style>
   :global(.footer) {
     margin-top: 100px;
-    position: fixed;
+    /* position: fixed; */
     left: 0;
     right: 0;
     bottom: 0;
