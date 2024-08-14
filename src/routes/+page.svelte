@@ -23,7 +23,11 @@
   } from "$lib/TemplateParts";
 
   import { formatDate, parseDate } from "$lib/UtilsDate";
-  import { isValidURL, isDateValid } from "$lib/UtilsValidate";
+  import {
+    isValidURL,
+    isDateValid,
+    validateAbstractWordCount,
+  } from "$lib/UtilsValidate";
 
   /**
    * Sveltestrap imports
@@ -57,6 +61,32 @@
   let zoomLink: string = "";
   let calendarLink: string = "";
   let modalOpen: boolean = false;
+
+  let errorMessages = {
+    abstract: "",
+    abstractCurrentWordCount: 0,
+    name: "",
+    panelChair: "",
+    supervisors: "",
+    panelMembers: "",
+    milestoneType: "",
+    title: "",
+    milestoneDate: "",
+    milestoneTime: "",
+    zoomLink: "",
+    calendarLink: "",
+  };
+
+  function checkWordCount(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const wordCount = input.value.split(" ").length;
+    errorMessages.abstractCurrentWordCount = wordCount;
+    if (wordCount > 250) {
+      errorMessages.abstract = "Abstract must be less than 250 words.";
+    } else {
+      errorMessages.abstract = "";
+    }
+  }
 
   function clearAllFields() {
     abstract = "";
@@ -163,16 +193,26 @@
 
   function validateForm(): boolean {
     if (!isDateValid(formattedMilestoneDate)) {
-      alert("Milestone date must not be before today.");
+      // alert("Milestone date must not be before today.");
+      errorMessages.milestoneDate = "Milestone date must not be before today.";
       return false;
+    } else {
+      errorMessages.milestoneDate = "";
     }
     if (!isValidURL(zoomLink)) {
-      alert("Invalid Zoom link.");
+      // alert("Invalid Zoom link.");
+      errorMessages.zoomLink =
+        "Invalid Zoom link. Needs to be a full zoom link starting with https://";
       return false;
+    } else {
+      errorMessages.zoomLink = "";
     }
     if (!isValidURL(calendarLink)) {
-      alert("Invalid Calendar link.");
+      errorMessages.calendarLink = "Invalid Calendar link.";
+      // alert("Invalid Calendar link.");
       return false;
+    } else {
+      errorMessages.calendarLink = "";
     }
     return true;
   }
@@ -183,12 +223,13 @@
   <InstructionsSection />
   <Row>
     <Col>
-      <Form>
+      <Form on:submit={onDownloadClick}>
         <Row>
           <Col
             ><FormGroup floating label="Your Name">
               <Input
                 id="full-name"
+                type="text"
                 placeholder="Full name"
                 required
                 bind:value={name}
@@ -246,9 +287,9 @@
             required
           >
             <option />
-            <option value="Confirmation">Confirmation</option>
-            <option value="Milestone">Milestone</option>
-            <option value="Final Review">Final Review</option>
+            <option value="Confirmation">1. Confirmation of Candidature</option>
+            <option value="Milestone">2. Progress Review</option>
+            <option value="Final Review">3. Final Review</option>
           </Input>
           <Tooltip target="miletone-type" placement="top">
             Enter your seminar <strong>type</strong>.
@@ -262,18 +303,26 @@
           </Tooltip>
         </FormGroup>
 
-        <FormGroup floating label="Abstract (150 words)">
+        <FormGroup floating label="Abstract (250 words)">
           <Input
             id="abstract"
             rows={10}
             type="textarea"
             placeholder="abstract"
             bind:value={abstract}
+            on:input={checkWordCount}
             required
           />
           <Tooltip target="abstract" placement="top">
-            Needs to be less than <strong>150</strong> words.
+            Needs to be less than <strong>250</strong> words.
           </Tooltip>
+          {#if errorMessages.abstract}
+            <div style="color: red; margin-top: 0.5rem;">
+              {errorMessages.abstract} You are currently using
+              <strong>{errorMessages.abstractCurrentWordCount}</strong>
+              words.
+            </div>
+          {/if}
         </FormGroup>
 
         <Row>
@@ -290,6 +339,11 @@
               <Tooltip target="milestone-date" placement="top">
                 When is your milestone <strong>planned</strong> for?
               </Tooltip>
+              {#if errorMessages.milestoneDate}
+                <div style="color: red; margin-top: 0.5rem;">
+                  {errorMessages.milestoneDate}
+                </div>
+              {/if}
             </FormGroup>
           </Col>
           <Col>
@@ -320,6 +374,11 @@
             <Tooltip target="zoom-link" placement="top">
               Enter your milestone's zoom <strong>link</strong>.
             </Tooltip>
+            {#if errorMessages.zoomLink}
+              <div style="color: red; margin-top: 0.5rem;">
+                {errorMessages.zoomLink}
+              </div>
+            {/if}
           </FormGroup>
 
           <FormGroup floating label="Calendar Link">
@@ -334,12 +393,15 @@
             <Tooltip target="calendar-link" placement="top">
               Enter your milestone's google calendar <strong>link</strong>.
             </Tooltip>
+            {#if errorMessages.calendarLink}
+              <div style="color: red; margin-top: 0.5rem;">
+                {errorMessages.calendarLink}
+              </div>
+            {/if}
           </FormGroup>
         </Row>
-        <Button type="button" color="primary" on:click={onDownloadClick}
-          >Download HTML File</Button
-        >
-        <Button type="button" color="danger" on:click={clearAllFields}
+        <Button type="submit" color="primary">Download HTML File</Button>
+        <Button type="button" color="info" on:click={clearAllFields}
           >Clear all fields</Button
         >
       </Form>

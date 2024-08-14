@@ -18,3 +18,7 @@ export function isDateValid(dateString: string): boolean {
     today.setHours(0, 0, 0, 0); // Set to start of the day
     return date >= today;
   }
+
+export function validateAbstractWordCount(value: string): boolean {
+    return value.split(/\s+/).length <= 250;
+  }

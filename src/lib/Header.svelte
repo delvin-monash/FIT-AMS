@@ -25,7 +25,7 @@
 
 <Navbar color="light" light expand="md" container="md">
   <NavbarBrand href="/">Advertise my Seminar: FIT-GR</NavbarBrand>
-  <NavbarToggler on:click={() => (isOpen = !isOpen)} />
+  <!-- <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
     <Nav class="ms-auto" navbar>
       <Dropdown nav inNavbar>
@@ -38,5 +38,5 @@
         </DropdownMenu>
       </Dropdown>
     </Nav>
-  </Collapse>
+  </Collapse> -->
 </Navbar>

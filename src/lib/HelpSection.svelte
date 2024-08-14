@@ -42,9 +42,19 @@
             open = e.detail;
           }}
         >
-          Before filling in this form, please create a Google Calendar event and
-          copy the link to the event. You will need to paste this link into the
-          form.
+          <p>
+            Before filling in this form, please create a Google Calendar event.
+            Open the event and select "More actions" and "Publish event". Copy
+            the link to the event and paste this link into the form.
+          </p>
+          <p>
+            Read more:
+            <a
+              target="_blank"
+              href="https://support.google.com/calendar/answer/13839531?hl=en&co=GENIE.Platform%3DDesktop#:~:text=On%20your%20calendar%2C%20open%20an,link%20using%20a%20messaging%20app."
+              >Share events from your Google Calendar (Google Calendar Docs)</a
+            >
+          </p>
         </AccordionItem>
         <AccordionItem
           header="Zoom Link"
@@ -65,12 +75,14 @@
             open = e.detail;
           }}
         >
-          You can find more information on the Intranet page for FIT Graduate
-          Research.
+          You can find more information on the <a
+            href="https://learning.monash.edu/course/view.php?id=15782"
+            target="_blank">FIT Graduate Research Resource Hub (Moodle)</a
+          >.
         </AccordionItem>
       </Accordion>
 
-      <p>Item #{id} is {open ? "open" : "closed"}</p>
+      <!-- <p>Item #{id} is {open ? "open" : "closed"}</p> -->
     </Col>
   </Row>
 </Container>

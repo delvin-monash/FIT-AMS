@@ -8,7 +8,10 @@
       <h2>Instructions</h2>
       <p>
         This is a simple form that you can use to submit your seminar details.
-        Please fill in all the fields and submit the form.
+        Please fill in all the fields and download the HTML file. Email the file
+        to <a href="mailto:FIT-graduate.research@monash.edu"
+          >FIT-Graduate.Research@monash.edu</a
+        >.
       </p>
     </Col>
   </Row>
