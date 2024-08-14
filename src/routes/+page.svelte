@@ -46,6 +46,7 @@
 
   import { Badge, Form, Input, FormGroup } from "@sveltestrap/sveltestrap";
 
+  let debugMode: boolean = false;
   let abstract: string = "";
   let name: string = "";
   let panelChair: string = "";
@@ -132,10 +133,15 @@
     if (validateForm()) {
       const input = event.target as HTMLInputElement;
       modalOpen = true;
-      console.log("modalOpen: ", modalOpen);
+      if (debugMode) {
+        console.log("modalOpen: ", modalOpen);
+      }
+
       triggerDownload(event);
     } else {
-      console.log("Form validation failed");
+      if (debugMode) {
+        console.log("Form validation failed");
+      }
     }
   }
 
@@ -288,7 +294,7 @@
           >
             <option />
             <option value="Confirmation">1. Confirmation of Candidature</option>
-            <option value="Milestone">2. Progress Review</option>
+            <option value="Progress Review">2. Progress Review</option>
             <option value="Final Review">3. Final Review</option>
           </Input>
           <Tooltip target="miletone-type" placement="top">
@@ -408,15 +414,19 @@
     </Col>
     <Col>
       <HelpSection />
-      <Button type="button" color="success" on:click={debugTestCasePerfect}
-        >Debug (Perfect)</Button
-      >
-      <p>
-        Selected Date: {milestoneDate ? milestoneDate.toDateString() : "None"}
-      </p>
+      {#if debugMode}
+        <Button type="button" color="success" on:click={debugTestCasePerfect}
+          >Debug (Perfect)</Button
+        >
+        <p>
+          Selected Date: {milestoneDate ? milestoneDate.toDateString() : "None"}
+        </p>
+      {/if}
     </Col>
   </Row>
-  <ConfirmModal inputAbstract={abstract} openScrollable={modalOpen} />
+  {#if debugMode}
+    <ConfirmModal inputAbstract={abstract} openScrollable={modalOpen} />
+  {/if}
 </Container>
 
 <MyFooter />
